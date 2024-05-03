@@ -7,6 +7,8 @@ import theme from "./theme";
 
 import Layout from "./components/Layout";
 import Dashboard from "./pages/dashboard";
+
+import Upload from "./pages/document";
 import Profile from "./pages/profile";
 import Tables from "./pages/tables";
 import UsersTable from "./pages/tables/UsersTablePage";
@@ -28,6 +30,7 @@ export default function App() {
             <Route path="tables" element={<Tables />} />
             <Route path="users-table" element={<UsersTable />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="document" element={<Upload />} />
 
             {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit

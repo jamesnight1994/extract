@@ -1,0 +1,15 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-chiralextract-staging-7cb4d-authRole",
+      "UnauthRoleArn": "arn:aws:iam::179212672762:role/amplify-chiralextract-staging-7cb4d-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::179212672762:role/amplify-chiralextract-staging-7cb4d-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-chiralextract-staging-7cb4d-deployment",
+      "UnauthRoleName": "amplify-chiralextract-staging-7cb4d-unauthRole",
+      "StackName": "amplify-chiralextract-staging-7cb4d",
+      "StackId": "arn:aws:cloudformation:us-east-1:179212672762:stack/amplify-chiralextract-staging-7cb4d/3837e290-08c9-11ef-86af-0eae1e5bd007",
+      "AmplifyAppId": "d1tn66l4duira5"
+    }
+  }
+}

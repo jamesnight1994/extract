@@ -6,6 +6,7 @@ import {
   MdModeEditOutline,
   MdAccountBox,
   MdOutlineTableChart,
+  MdUpload,
 } from "react-icons/md";
 
 export const baseConfig = {
@@ -46,6 +47,13 @@ export const appNavs = [
     icon: <Icon as={MdDashboard} />,
     title: "Dashboard",
     to: "/",
+  },
+
+  {
+    eventKey: "document",
+    icon: <Icon as={MdUpload} />,
+    title: "Document Upload",
+    to: "/document",
   },
 
   {
