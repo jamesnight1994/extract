@@ -6,7 +6,29 @@ or in the "license" file accompanying this file. This file is distributed on an 
 See the License for the specific language governing permissions and limitations under the License.
 */
 
+class DetectionPipeline {
+  static task = 'document-question-answering';
+  static model = 'Xenova/donut-base-finetuned-docvqa';
+  static instance = null;
 
+  static async getInstance(progress_callback = null) {
+    if (this.instance === null) {
+      // Dynamically import the Transformers.js library
+      let { pipeline, env } = await import('@xenova/transformers');
+
+      // path to local model
+      // env.localModelPath = `./models`;
+      // Disable the loading of remote models from the Hugging Face Hub:
+      // env.allowRemoteModels = false;
+      env.allowLocalModels = false;
+
+      this.instance = pipeline(this.task, this.model, { progress_callback });
+    }
+
+    return this.instance;
+  }
+
+}
 
 
 const express = require('express')
@@ -19,7 +41,7 @@ app.use(bodyParser.json())
 app.use(awsServerlessExpressMiddleware.eventContext())
 
 // Enable CORS for all methods
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Headers", "*")
   next()
@@ -30,60 +52,62 @@ app.use(function(req, res, next) {
  * Example get method *
  **********************/
 
-app.get('/qa', function(req, res) {
+app.get('/qa', function (req, res) {
   // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
+  res.json({ success: 'get call succeed!', url: req.url });
 });
 
-app.get('/qa/*', function(req, res) {
+app.get('/qa/*', function (req, res) {
   // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
+  res.json({ success: 'get call succeed!', url: req.url });
 });
 
 /****************************
 * Example post method *
 ****************************/
 
-app.post('/qa', function(req, res) {
+app.post('/qa', async function (req, res) {
   // Add your code here
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
+  const detector = await DetectionPipeline.getInstance();
+  let output = await detector('http://localhost:8080/preview.png','What is the invoice number');
+  res.json({ success: 'post call succeed!', output})
 });
 
-app.post('/qa/*', function(req, res) {
+app.post('/qa/*', function (req, res) {
   // Add your code here
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
+  res.json({ success: 'post call succeed!', url: req.url, body: req.body })
 });
 
 /****************************
 * Example put method *
 ****************************/
 
-app.put('/qa', function(req, res) {
+app.put('/qa', function (req, res) {
   // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
+  res.json({ success: 'put call succeed!', url: req.url, body: req.body })
 });
 
-app.put('/qa/*', function(req, res) {
+app.put('/qa/*', function (req, res) {
   // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
+  res.json({ success: 'put call succeed!', url: req.url, body: req.body })
 });
 
 /****************************
 * Example delete method *
 ****************************/
 
-app.delete('/qa', function(req, res) {
+app.delete('/qa', function (req, res) {
   // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
+  res.json({ success: 'delete call succeed!', url: req.url });
 });
 
-app.delete('/qa/*', function(req, res) {
+app.delete('/qa/*', function (req, res) {
   // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
+  res.json({ success: 'delete call succeed!', url: req.url });
 });
 
-app.listen(3000, function() {
-    console.log("App started")
+app.listen(3000, function () {
+  console.log("App started")
 });
 
 // Export the app object. When executing the application local this does nothing. However,
