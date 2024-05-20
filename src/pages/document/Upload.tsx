@@ -2,16 +2,28 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   Flex,
-  Input
+  Input,
+  Image,
+  Loader
 } from "@aws-amplify/ui-react";
 
-
 const Upload = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [, setSelectedFile] = useState(null);
   const [previewURL, setPreviewURL] = useState(null);
-  const worker = useRef(null);
 
-  // We use the `useEffect` hook to setup the worker as soon as the `App` component is mounted.
+  // Model loading
+  const [ready, setReady] = useState(null);
+  const [disabled, setDisabled] = useState(false);
+  const [progressItems, setProgressItems] = useState([]);
+  const [modelLoadedPercentage, setModelLoadedPercentage] = useState(0);
+
+  // Inputs and outputs
+  const [input, setInput] = useState('I love walking my dog.');
+  const [output, setOutput] = useState('');
+
+  
+  const worker = useRef<Worker>(null);
+
   useEffect(() => {
     if (!worker.current) {
       // Create the worker if it does not yet exist.
@@ -21,18 +33,56 @@ const Upload = () => {
     }
 
     // Create a callback function for messages from the worker thread.
-    const onMessageReceived = () => {
-      // TODO: Will fill in later
+    const onMessageReceived = (e) => {
+      switch (e.data.status) {
+        case 'initiate':
+          // Model file start load: add a new progress item to the list.
+          setReady(false);
+          setProgressItems(prev => [...prev, e.data]);
+          break;
+
+        case 'progress':
+          // Model file progress: update one of the progress items.
+          setProgressItems(
+            prev => prev.map(item => {
+              if (item.file === e.data.file) {
+                return { ...item, progress: e.data.progress }
+              }
+              return item;
+            })
+          );
+          break;
+
+        case 'done':
+          // Model file loaded: remove the progress item from the list.
+          setProgressItems(
+            prev => prev.filter(item => item.file !== e.data.file)
+          );
+          break;
+
+        case 'ready':
+          // Pipeline ready: the worker is ready to accept messages.
+          setReady(true);
+          break;
+
+        case 'update':
+          // Generation update: update the output text.
+          setOutput(e.data.output);
+          break;
+
+        case 'complete':
+          // Generation complete: re-enable the "Translate" button
+          setDisabled(false);
+          break;
+      }
     };
 
     // Attach the callback function as an event listener.
-    worker.current.addEventListener('Model message:', onMessageReceived);
+    worker.current.addEventListener('message', onMessageReceived);
 
     // Define a cleanup function for when the component is unmounted.
-    return () => worker.current.removeEventListener('Model message:', onMessageReceived);
+    return () => worker.current.removeEventListener('message', onMessageReceived);
   });
-
-
 
   const onFileChange = (event) => {
     const file = event.target.files[0];
@@ -51,44 +101,43 @@ const Upload = () => {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
+    event.preventDefault()
+    worker.current.postMessage({
+      src: previewURL
+    })
 
-    if (!selectedFile) {
-      // Handle error or notification if no file is selected
-      console.error('Please select an image to upload');
-      return; // Early return to prevent unnecessary processing
-    }
-
-    const formData = new FormData();
-    formData.append('image', selectedFile);
-
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const arrayBuffer = reader.result; // Assuming the file is small enough
-      
-
-      worker.current.postMessage(arrayBuffer);
-
-      // Handle worker responses (if applicable)
-      worker.current.onmessage = (event) => {
-        console.log('Worker message:', event.data);
-      };
-    };
-    reader.readAsArrayBuffer(selectedFile);
-  };
-
-
+  }
 
   return (
     <>
-      <Flex as="form" direction="column" width="100%" onSubmit={handleSubmit}>
-        <Input name="image" type="file" accept="image/*" onChange={onFileChange} />
+      {true ? (
+        <Flex as="form" direction="column" width="100%">
+          <Input name="image" type="file" accept="image/*" onChange={onFileChange} />
 
-        <Button type="submit" variation="primary" width={{ base: "100%", large: "50%" }} style={{ marginLeft: "auto" }}>
-          Submit
-        </Button>
-      </Flex>
-      {previewURL && <img src={previewURL} alt="Uploaded preview" />} {/* Optional preview */}
+          <Button type="submit" onClick={handleSubmit} variation="primary" width="100%" style={{ marginLeft: "auto" }}>
+            Submit
+          </Button>
+        </Flex>
+
+      ) : (
+        <Flex direction="column">
+          <p>Model is loading...</p>
+          <Loader width="100%" variation="linear" percentage={modelLoadedPercentage} isDeterminate={true} />
+        </Flex>
+
+
+      )}
+      {previewURL
+        && <img
+          // alt="Amplify logo"
+          src={previewURL}
+          // objectFit="initial"
+          // backgroundColor="initial"
+          // marginTop="10%"
+          // marginLeft="40%"
+          // sizes="500px"
+        />}
+      { }
     </>
   );
 };

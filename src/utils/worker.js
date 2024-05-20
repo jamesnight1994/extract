@@ -1,4 +1,4 @@
-import { env, pipeline } from '@xenova/transformers';
+import { Pipeline, env, pipeline } from '@xenova/transformers';
 
 /* eslint-disable no-unused-vars */
 
@@ -33,13 +33,17 @@ self.addEventListener('message', async (event) => {
         self.postMessage(x);
     });
 
-    // Actually perform the translation
-    let output = await detector('What is the invoice number',event.data);
+    try {
+
+        const output = await detector(event.data.src, "What is the invoice number?");
+        console.log(output)
+    } catch (error) {
+        console.log(e)
+    }
 
     // Send the output back to the main thread
     self.postMessage({
-        status: 'complete',
-        output: output,
+        status: 'complete'
     });
 });
 
