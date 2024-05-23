@@ -3,7 +3,7 @@ import { Pipeline, env, pipeline } from '@xenova/transformers';
 /* eslint-disable no-unused-vars */
 
 
-class DetectionPipeline {
+class ImageQAPipeline {
     static task = 'document-question-answering';
     static model = 'Xenova/donut-base-finetuned-docvqa';
     static instance = null;
@@ -25,26 +25,41 @@ class DetectionPipeline {
 /* eslint-disable-line no-restricted-globals */
 // Listen for messages from the main thread
 self.addEventListener('message', async (event) => {
-    // Retrieve the translation pipeline. When called for the first time,
-    // this will load the pipeline and save it for future use.
-    let detector = await DetectionPipeline.getInstance(x => {
-        // We also add a progress callback to the pipeline so that we can
-        // track model loading.
-        self.postMessage(x);
-    });
+    const { type } = event.data;
 
-    try {
+    if (type === 'ask') {
+        // Retrieve the translation pipeline. When called for the first time,
+        // this will load the pipeline and save it for future use.
+        const qa = await ImageQAPipeline.getInstance(x => {
+            // We also add a progress callback to the pipeline so that we can
+            // track model loading.
+            self.postMessage(x);
+        });
 
-        const output = await detector(event.data.src, "What is the invoice number?");
-        console.log(output)
-    } catch (error) {
-        console.log(e)
+        // ask question about the document
+        try {
+            const { imageSrc, question } = event.data;
+
+            // ask question about the image
+            const response = await qa(imageSrc, question);
+
+            console.log(response);
+
+            // Send the output back to the main thread
+            self.postMessage({
+                status: 'complete',
+                response: response[0].answer
+            });
+
+        } catch (error) {
+            console.error(error);
+        }
+
+    } else {
+        
     }
 
-    // Send the output back to the main thread
-    self.postMessage({
-        status: 'complete'
-    });
+
 });
 
 /* eslint-disable-line no-restricted-globals */

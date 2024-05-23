@@ -4,7 +4,8 @@ import {
   Flex,
   Input,
   Image,
-  Loader
+  Loader,
+  Label
 } from "@aws-amplify/ui-react";
 
 const Upload = () => {
@@ -14,14 +15,14 @@ const Upload = () => {
   // Model loading
   const [ready, setReady] = useState(null);
   const [disabled, setDisabled] = useState(false);
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState()
   const [progressItems, setProgressItems] = useState([]);
-  const [modelLoadedPercentage, setModelLoadedPercentage] = useState(0);
 
   // Inputs and outputs
-  const [input, setInput] = useState('I love walking my dog.');
   const [output, setOutput] = useState('');
 
-  
+
   const worker = useRef<Worker>(null);
 
   useEffect(() => {
@@ -43,6 +44,7 @@ const Upload = () => {
 
         case 'progress':
           // Model file progress: update one of the progress items.
+          setDisabled(true);
           setProgressItems(
             prev => prev.map(item => {
               if (item.file === e.data.file) {
@@ -71,7 +73,8 @@ const Upload = () => {
           break;
 
         case 'complete':
-          // Generation complete: re-enable the "Translate" button
+          // Generation complete: re-enable the "Submit" button
+          setAnswer(e.data.response);
           setDisabled(false);
           break;
       }
@@ -103,41 +106,62 @@ const Upload = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     worker.current.postMessage({
-      src: previewURL
+      type: 'ask',
+      question: question,
+      imageSrc: previewURL
     })
 
   }
 
   return (
     <>
-      {true ? (
-        <Flex as="form" direction="column" width="100%">
-          <Input name="image" type="file" accept="image/*" onChange={onFileChange} />
 
-          <Button type="submit" onClick={handleSubmit} variation="primary" width="100%" style={{ marginLeft: "auto" }}>
-            Submit
-          </Button>
-        </Flex>
+      {/* Upload question & document form */}
+      <Flex as="form" direction="column" width="100%">
+        <Label>Question:</Label>
+        <Input name="question" onChange={(e) => setQuestion(e.target.value)} type="input" />
+        <Input name="image" type="file" accept="image/*" onChange={onFileChange} />
+        <Button disabled={disabled} type="submit" onClick={handleSubmit} variation="primary" width="100%" style={{ marginLeft: "auto" }}>
+          Submit
+        </Button>
+      </Flex>
 
-      ) : (
-        <Flex direction="column">
-          <p>Model is loading...</p>
-          <Loader width="100%" variation="linear" percentage={modelLoadedPercentage} isDeterminate={true} />
-        </Flex>
-
-
-      )}
-      {previewURL
-        && <img
-          // alt="Amplify logo"
+      {/* Preview image  */}
+      {
+        previewURL
+        && <Image
+          alt="Amplify logo"
           src={previewURL}
-          // objectFit="initial"
-          // backgroundColor="initial"
-          // marginTop="10%"
-          // marginLeft="40%"
-          // sizes="500px"
-        />}
-      { }
+          objectFit="initial"
+          backgroundColor="initial"
+          marginTop="10%"
+          marginRight="50%"
+          height="350px"
+        />
+      }
+
+      {/* loading model files progress */}
+      {ready === false && (
+        <label>Loading models... (only run once)</label>
+      )}
+      {progressItems.map(data => (
+        <div key={data.file}>
+          <label>{data.file} (only run once)</label>
+          <Loader width="100%" variation="linear" percentage={data.progress} isDeterminate={true} />
+        </div>
+      ))}
+
+      {/* If there is a question but no answer */}
+      {(disabled && !answer) && (
+        <Loader size="large" />
+      )}
+
+      {/* If there is an answer */}
+      {answer && (
+        <Label marginTop={20}>The answer is: {answer}</Label>
+      )}
+
+
     </>
   );
 };
