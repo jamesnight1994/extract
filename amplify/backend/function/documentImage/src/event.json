@@ -7,5 +7,5 @@
   "headers": {
     "Content-Type": "application/json"
   },
-  "body": "{\"msg\":\"Hello from the event.json body\"}"
+  "body": "{\"data\":{\"question\":\"What is the invoice number?\",\"imageSrc\":\"http://locahost:8080/preview.png\"}}"
 }

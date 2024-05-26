@@ -5,7 +5,9 @@ import {
   Input,
   Image,
   Loader,
-  Label
+  Label,
+  TextField,
+  TextAreaField
 } from "@aws-amplify/ui-react";
 
 const Upload = () => {
@@ -16,6 +18,7 @@ const Upload = () => {
   const [ready, setReady] = useState(null);
   const [disabled, setDisabled] = useState(false);
   const [question, setQuestion] = useState("");
+  const [context, setContext] = useState("");
   const [answer, setAnswer] = useState()
   const [progressItems, setProgressItems] = useState([]);
 
@@ -87,6 +90,8 @@ const Upload = () => {
     return () => worker.current.removeEventListener('message', onMessageReceived);
   });
 
+
+
   const onFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
@@ -104,11 +109,11 @@ const Upload = () => {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
     worker.current.postMessage({
       type: 'ask',
       question: question,
-      imageSrc: previewURL
+      context: context
     })
 
   }
@@ -119,8 +124,8 @@ const Upload = () => {
       {/* Upload question & document form */}
       <Flex as="form" direction="column" width="100%">
         <Label>Question:</Label>
-        <Input name="question" onChange={(e) => setQuestion(e.target.value)} type="input" />
-        <Input name="image" type="file" accept="image/*" onChange={onFileChange} />
+        <Input name="question" onChange={(e) => setQuestion(e.target.value)} />
+        <TextAreaField  label="Context" size="large" onChange={(e) => setContext(e.target.value)}  />
         <Button disabled={disabled} type="submit" onClick={handleSubmit} variation="primary" width="100%" style={{ marginLeft: "auto" }}>
           Submit
         </Button>
@@ -145,7 +150,7 @@ const Upload = () => {
         <label>Loading models... (only run once)</label>
       )}
       {progressItems.map(data => (
-        <div key={data.file}>
+        <div>
           <label>{data.file} (only run once)</label>
           <Loader width="100%" variation="linear" percentage={data.progress} isDeterminate={true} />
         </div>

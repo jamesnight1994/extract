@@ -27,14 +27,14 @@ const HeaderNav = () => {
         trigger={
           <MenuButton variation="menu">
             <div className="header-avatar">
-              <img alt="avatar" src={"https://i.pravatar.cc/150?img=3"}></img>
+              {/* <img alt="avatar" src={"https://i.pravatar.cc/150?img=3"}></img> */}
             </div>
           </MenuButton>
         }
       >
-        <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
+        {/* <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
         <MenuItem>Settings</MenuItem>
-        <MenuItem>Logout</MenuItem>
+        <MenuItem>Logout</MenuItem> */}
       </Menu>
     </>
   );

@@ -67,10 +67,15 @@ app.get('/qa/*', function (req, res) {
 ****************************/
 
 app.post('/qa', async function (req, res) {
+   // Fetch the data object from the body
+   const data = req.body.data;
+   
+  
   // Add your code here
   const detector = await DetectionPipeline.getInstance();
-  let output = await detector("http://localhost:8080/preview.png",'What is the invoice number');
-  res.json({ success: 'post call succeed!', output})
+  let answer = await detector(data.imageSrc,data.question)[0].answer;
+
+  res.json({ ...answer})
 });
 
 app.post('/qa/*', function (req, res) {

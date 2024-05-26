@@ -1,9 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { baseConfig } from "../../config";
-import SideBar from "../SideBar";
 import Header from "../Header";
-import Footer from "../Footer";
 import "./Layout.css";
 
 export interface LayoutProps {
@@ -14,7 +12,7 @@ const Layout = () => {
   return (
     <div className="layout-container">
       {baseConfig.header ? <Header /> : <></>}
-      <SideBar />
+      {/* <SideBar /> */}
 
       {/* An <Outlet> renders whatever child route is currently active,
           so you can think about this <Outlet> as a placeholder for
@@ -22,7 +20,7 @@ const Layout = () => {
       <div className="page-container">
         <Outlet />
       </div>
-      {baseConfig.footer ? <Footer /> : <></>}
+      {/* {baseConfig.footer ? <Footer /> : <></>} */}
     </div>
   );
 };

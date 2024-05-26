@@ -4,8 +4,8 @@ import { Pipeline, env, pipeline } from '@xenova/transformers';
 
 
 class ImageQAPipeline {
-    static task = 'document-question-answering';
-    static model = 'Xenova/donut-base-finetuned-docvqa';
+    static task = 'question-answering';
+    static model = 'Xenova/distilbert-base-cased-distilled-squad';
     static instance = null;
 
     static async getInstance(progress_callback = null) {
@@ -38,17 +38,17 @@ self.addEventListener('message', async (event) => {
 
         // ask question about the document
         try {
-            const { imageSrc, question } = event.data;
+            const { question, context } = event.data;
 
             // ask question about the image
-            const response = await qa(imageSrc, question);
+            const response = await qa(question, context);
 
             console.log(response);
 
             // Send the output back to the main thread
             self.postMessage({
                 status: 'complete',
-                response: response[0].answer
+                response: response.answer
             });
 
         } catch (error) {

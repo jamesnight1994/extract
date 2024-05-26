@@ -9,11 +9,15 @@
       "UnauthRoleName": "amplify-chiralextract-staging-7cb4d-unauthRole",
       "StackName": "amplify-chiralextract-staging-7cb4d",
       "StackId": "arn:aws:cloudformation:us-east-1:179212672762:stack/amplify-chiralextract-staging-7cb4d/3837e290-08c9-11ef-86af-0eae1e5bd007",
-      "AmplifyAppId": "d1tn66l4duira5"
+      "AmplifyAppId": "d1tn66l4duira5",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-chiralextract-staging-7cb4d-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
       "function": {
         "documentImage": {}
+      },
+      "auth": {
+        "extract": {}
       }
     }
   }
