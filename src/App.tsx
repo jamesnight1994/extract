@@ -8,7 +8,7 @@ import theme from "./theme";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/dashboard";
 
-import Upload from "./pages/document";
+import Upload from "./pages/qa";
 import Profile from "./pages/profile";
 import Tables from "./pages/tables";
 import UsersTable from "./pages/tables/UsersTablePage";

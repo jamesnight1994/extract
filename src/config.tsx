@@ -20,9 +20,9 @@ export const baseConfig = {
   footerText: (
     <>
       <span>
-        © MIT {new Date().getFullYear()}, Made with ❤️ by {""}
-        <a href="https://github.com/mrtzdev" target="_blank" rel="noreferrer">
-          Mrtzdev
+        © MIT {new Date().getFullYear()}, Made with ❤️ by {"James"}
+        <a href="https://github.com/jamesnight1994" target="_blank" rel="noreferrer">
+        jamesnight1994
         </a>
       </span>
     </>
@@ -54,48 +54,5 @@ export const appNavs = [
     icon: <Icon as={MdUpload} />,
     title: "Document Upload",
     to: "/document",
-  },
-
-  {
-    eventKey: "tables",
-    icon: <Icon as={MdOutlineTableChart} />,
-    title: "Tables",
-    to: "/tables",
-    children: [
-      {
-        eventKey: "basic-table",
-        title: "Basic Table",
-        to: "/tables",
-      },
-      {
-        eventKey: "users",
-        title: "Users Table",
-        to: "/users-table",
-      },
-    ],
-  },
-  {
-    eventKey: "forms",
-    icon: <Icon as={MdModeEditOutline} />,
-    title: "Forms",
-    to: "/forms",
-    children: [
-      {
-        eventKey: "form-basic",
-        title: "Basic",
-        to: "/forms",
-      },
-      {
-        eventKey: "form-wizard",
-        title: "Edit Form",
-        to: "/edit-form",
-      },
-    ],
-  },
-  {
-    eventKey: "profile",
-    icon: <Icon as={MdAccountBox} />,
-    title: "Profile",
-    to: "/profile",
   },
 ];

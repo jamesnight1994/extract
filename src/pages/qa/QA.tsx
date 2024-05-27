@@ -3,22 +3,29 @@ import {
   Button,
   Flex,
   Input,
-  Image,
   Loader,
   Label,
-  TextField,
   TextAreaField
 } from "@aws-amplify/ui-react";
 
 const Upload = () => {
-  const [, setSelectedFile] = useState(null);
-  const [previewURL, setPreviewURL] = useState(null);
 
   // Model loading
   const [ready, setReady] = useState(null);
   const [disabled, setDisabled] = useState(false);
   const [question, setQuestion] = useState("");
-  const [context, setContext] = useState("");
+  const [context, setContext] = useState(`Facts about James:
+
+  James Ng'ang'a is a well-rounded software engineer of 6 years, with expertise in full-stack development and DevOps.
+  He specializes in creating ETL pipelines and integrating them with applications to support various business operations.
+  Skills:
+  Building web applications around ETL pipelines and integrating them with event-driven servers like Kafka.
+  Visualizing data using optimized queries on platforms such as Power BI and Quicksight.
+  Implementing and fine-tuning open-source AI models using business data.
+  Technologies used:
+  Software Development: Express.js, Django, MySQL, and Postgres.
+  Data Engineering: Python, Power BI, SQL, MySQL, and Postgres.
+  His professional experience demonstrates his ability to tackle complex technical challenges across various domains, making him a versatile and valuable asset in software engineering and data engineering roles.`);
   const [answer, setAnswer] = useState()
   const [progressItems, setProgressItems] = useState([]);
 
@@ -27,6 +34,7 @@ const Upload = () => {
 
 
   const worker = useRef<Worker>(null);
+  const exampleContext = 
 
   useEffect(() => {
     if (!worker.current) {
@@ -90,24 +98,6 @@ const Upload = () => {
     return () => worker.current.removeEventListener('message', onMessageReceived);
   });
 
-
-
-  const onFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-
-    // Optional: Handle image preview
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewURL(reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setPreviewURL(null); // Clear preview if no file selected
-    }
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     worker.current.postMessage({
@@ -118,36 +108,23 @@ const Upload = () => {
 
   }
 
+  
   return (
     <>
 
-      {/* Upload question & document form */}
+      {/* Context & question form */}
       <Flex as="form" direction="column" width="100%">
         <Label>Question:</Label>
         <Input name="question" onChange={(e) => setQuestion(e.target.value)} />
-        <TextAreaField  label="Context" size="large" onChange={(e) => setContext(e.target.value)}  />
+        <TextAreaField value={context} label="Context" size="large" onChange={(e) => setContext(e.target.value)}  />
         <Button disabled={disabled} type="submit" onClick={handleSubmit} variation="primary" width="100%" style={{ marginLeft: "auto" }}>
           Submit
         </Button>
       </Flex>
 
-      {/* Preview image  */}
-      {
-        previewURL
-        && <Image
-          alt="Amplify logo"
-          src={previewURL}
-          objectFit="initial"
-          backgroundColor="initial"
-          marginTop="10%"
-          marginRight="50%"
-          height="350px"
-        />
-      }
-
       {/* loading model files progress */}
       {ready === false && (
-        <label>Loading models... (only run once)</label>
+        <label>Loading models...</label>
       )}
       {progressItems.map(data => (
         <div>

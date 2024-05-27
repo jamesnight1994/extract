@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { baseConfig } from "../../config";
 import Header from "../Header";
 import "./Layout.css";
+import Footer from "../Footer";
 
 export interface LayoutProps {
   children?: React.ReactNode;
@@ -20,7 +21,7 @@ const Layout = () => {
       <div className="page-container">
         <Outlet />
       </div>
-      {/* {baseConfig.footer ? <Footer /> : <></>} */}
+      {baseConfig.footer ? <Footer /> : <></>}
     </div>
   );
 };
