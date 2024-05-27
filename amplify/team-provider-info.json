@@ -13,11 +13,14 @@
       "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-chiralextract-staging-7cb4d-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
-      "function": {
-        "documentImage": {}
-      },
       "auth": {
         "extract": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d1tn66l4duira5",
+          "type": "manual"
+        }
       }
     }
   }

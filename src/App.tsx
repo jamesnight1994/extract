@@ -24,7 +24,7 @@ export default function App() {
             parent route elements. See the note about <Outlet> below. */}
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<Upload />} />
             <Route path="forms" element={<Forms />} />
             <Route path="edit-form" element={<EditForm />} />
             <Route path="tables" element={<Tables />} />

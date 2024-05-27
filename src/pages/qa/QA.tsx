@@ -8,12 +8,19 @@ import {
   TextAreaField
 } from "@aws-amplify/ui-react";
 
-const Upload = () => {
+const QA = () => {
 
-  // Model loading
+  const worker = useRef<Worker>(null);
+
+
+  // States to track the model download process
   const [ready, setReady] = useState(null);
+  const [progressItems, setProgressItems] = useState([]);
+
+  //states to tract the qa input and output
   const [disabled, setDisabled] = useState(false);
   const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState()
   const [context, setContext] = useState(`Facts about James:
 
   James Ng'ang'a is a well-rounded software engineer of 6 years, with expertise in full-stack development and DevOps.
@@ -26,15 +33,6 @@ const Upload = () => {
   Software Development: Express.js, Django, MySQL, and Postgres.
   Data Engineering: Python, Power BI, SQL, MySQL, and Postgres.
   His professional experience demonstrates his ability to tackle complex technical challenges across various domains, making him a versatile and valuable asset in software engineering and data engineering roles.`);
-  const [answer, setAnswer] = useState()
-  const [progressItems, setProgressItems] = useState([]);
-
-  // Inputs and outputs
-  const [output, setOutput] = useState('');
-
-
-  const worker = useRef<Worker>(null);
-  const exampleContext = 
 
   useEffect(() => {
     if (!worker.current) {
@@ -80,7 +78,6 @@ const Upload = () => {
 
         case 'update':
           // Generation update: update the output text.
-          setOutput(e.data.output);
           break;
 
         case 'complete':
@@ -108,18 +105,20 @@ const Upload = () => {
 
   }
 
-  
+
   return (
     <>
 
       {/* Context & question form */}
       <Flex as="form" direction="column" width="100%">
-        <Label>Question:</Label>
-        <Input name="question" onChange={(e) => setQuestion(e.target.value)} />
-        <TextAreaField value={context} label="Context" size="large" onChange={(e) => setContext(e.target.value)}  />
-        <Button disabled={disabled} type="submit" onClick={handleSubmit} variation="primary" width="100%" style={{ marginLeft: "auto" }}>
+        <label>Question</label>
+        <input name="question" onChange={(e) => setQuestion(e.target.value)} />
+
+        <label>Context</label>
+        <textarea value={context} onChange={(e) => setContext(e.target.value)} />
+        <button disabled={disabled} type="submit" onClick={handleSubmit} style={{ marginLeft: "auto" }}>
           Submit
-        </Button>
+        </button>
       </Flex>
 
       {/* loading model files progress */}
@@ -129,6 +128,7 @@ const Upload = () => {
       {progressItems.map(data => (
         <div>
           <label>{data.file} (only run once)</label>
+          {/* You can use the loader from aws amplify */}
           <Loader width="100%" variation="linear" percentage={data.progress} isDeterminate={true} />
         </div>
       ))}
@@ -148,4 +148,4 @@ const Upload = () => {
   );
 };
 
-export default Upload;
+export default QA;

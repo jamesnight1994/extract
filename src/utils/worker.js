@@ -1,11 +1,12 @@
-import { Pipeline, env, pipeline } from '@xenova/transformers';
+import { env, pipeline } from '@xenova/transformers';
 
-/* eslint-disable no-unused-vars */
 
 
 class ImageQAPipeline {
-    static task = 'question-answering';
+    // The LLM we will be using 
     static model = 'Xenova/distilbert-base-cased-distilled-squad';
+    // The task type we will be running
+    static task = 'question-answering';
     static instance = null;
 
     static async getInstance(progress_callback = null) {
@@ -19,10 +20,7 @@ class ImageQAPipeline {
 
 }
 
-/* eslint-enable no-unused-vars */
 
-
-/* eslint-disable-line no-restricted-globals */
 // Listen for messages from the main thread
 self.addEventListener('message', async (event) => {
     const { type } = event.data;
@@ -36,11 +34,11 @@ self.addEventListener('message', async (event) => {
             self.postMessage(x);
         });
 
-        // ask question about the document
+        
         try {
             const { question, context } = event.data;
 
-            // ask question about the image
+            // ask question about the context
             const response = await qa(question, context);
 
             console.log(response);
@@ -55,11 +53,7 @@ self.addEventListener('message', async (event) => {
             console.error(error);
         }
 
-    } else {
-        
-    }
+    } 
 
 
 });
-
-/* eslint-disable-line no-restricted-globals */

@@ -1,20 +1,5 @@
 {
-  "api": {
-    "documentImage": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "category": "function",
-          "resourceName": "documentImage"
-        }
-      ],
-      "providerPlugin": "awscloudformation",
-      "service": "API Gateway"
-    }
-  },
+  "api": {},
   "auth": {
     "extract": {
       "dependsOn": [],
@@ -41,11 +26,30 @@
       "serviceType": "managed"
     }
   },
-  "function": {
-    "documentImage": {
-      "build": true,
+  "function": {},
+  "hosting": {
+    "amplifyhosting": {
       "providerPlugin": "awscloudformation",
-      "service": "Lambda"
+      "service": "amplifyhosting",
+      "type": "manual"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
     }
   }
 }
